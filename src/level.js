@@ -132,3 +132,16 @@ export const spawns = {
   A: { x: -66, y: 4, z: 0, yaw: -Math.PI / 2 }, // facing +x
   B: { x: 66, y: 4, z: 0, yaw: Math.PI / 2 },   // facing -x
 };
+
+// Where wandering targets start and come back: y is the surface each stands on.
+const wanderHalf = [
+  { x: -62, y: 4, z: 6 },
+  { x: -62, y: 4, z: -6 },
+  { x: -40, y: 4, z: 3 },
+  { x: -42, y: 0, z: -10 },
+  { x: -23, y: 0, z: 1 },
+];
+export const wanderSpots = [
+  ...wanderHalf,
+  ...wanderHalf.map(({ x, y, z }) => ({ x: -x, y, z: -z })),
+];

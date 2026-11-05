@@ -9,6 +9,7 @@
     html, body { margin: 0; height: 100%; overflow: hidden; background: #8fb4d4; }
     body { font: 14px/1.45 system-ui, sans-serif; color: #fff; }
     canvas { display: block; position: fixed; inset: 0; }
+    button { font: inherit; color: inherit; cursor: pointer; }
 
     #stats {
       position: fixed; top: 10px; left: 12px; white-space: pre;
@@ -19,12 +20,15 @@
       position: fixed; top: 50%; left: 50%; width: 4px; height: 4px; margin: -2px 0 0 -2px;
       border-radius: 50%; background: #fff; box-shadow: 0 0 0 1px #0009; pointer-events: none;
     }
+    #crosshair.in-range { background: #ffc36a; box-shadow: 0 0 0 1px #0009, 0 0 0 5px #ffc36a66; }
+    #crosshair.hit { background: #ff5a45; box-shadow: 0 0 0 1px #0009, 0 0 0 7px #ff5a4599; }
+
     #overlay {
       position: fixed; inset: 0; display: flex; flex-direction: column;
       align-items: center; justify-content: center; text-align: center;
       background: #10182499; cursor: pointer; user-select: none;
     }
-    #overlay[hidden], #crosshair[hidden] { display: none; }
+    #overlay[hidden], #crosshair[hidden], #select[hidden], #meters[hidden], #change[hidden] { display: none; }
     h1 { margin: 0 0 4px; font-size: 30px; }
     #overlay > p { margin: 0 0 20px; font-size: 16px; }
     dl {
@@ -33,23 +37,85 @@
     }
     dt { font-weight: 600; text-align: right; }
     dd { margin: 0; opacity: .85; }
+    #change {
+      margin-top: 22px; padding: 8px 18px; border-radius: 6px;
+      background: #ffffff1f; border: 1px solid #ffffff55;
+    }
+    #change:hover { background: #ffffff38; }
+
+    #meters {
+      position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%);
+      display: flex; gap: 14px; pointer-events: none;
+      font: 600 11px/1 system-ui, sans-serif; text-transform: uppercase; letter-spacing: .08em;
+      text-shadow: 0 1px 2px #000b;
+    }
+    .meter { width: 110px; }
+    .meter-track { height: 5px; margin-top: 5px; border-radius: 3px; background: #0007; overflow: hidden; }
+    .meter-fill { height: 100%; background: #fff; }
+    .meter-fill.ready { background: #ffc36a; }
+
+    #select {
+      position: fixed; inset: 0; display: flex; flex-direction: column; justify-content: space-between;
+      padding: 28px 24px 24px; box-sizing: border-box; user-select: none;
+    }
+    #select header { text-align: center; }
+    #select header p { margin: 0; opacity: .7; }
+    #cards {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 12px; width: min(1120px, 100%); margin: 0 auto 16px;
+    }
+    .card {
+      display: flex; flex-direction: column; justify-content: flex-start;
+      padding: 14px 15px; border-radius: 8px; text-align: left;
+      background: #1a2230e6; border: 2px solid #ffffff1c;
+      transition: border-color .12s, transform .12s, background .12s;
+    }
+    .card:hover { border-color: #ffffff66; }
+    .card:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+    .card[aria-pressed="true"] { border-color: #ffc36a; background: #262f40f2; transform: translateY(-5px); }
+    .card h2 { margin: 0; font-size: 19px; }
+    .role { color: #ffc36a; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .07em; }
+    .blurb { margin: 7px 0 9px; font-size: 13px; opacity: .85; }
+    .card ul { margin: 0; padding: 0; list-style: none; font-size: 12px; }
+    .card li { padding: 3px 0; border-top: 1px solid #ffffff17; }
+    .card li b { font-weight: 600; }
+    .card li span { opacity: .65; }
+    #select footer { display: flex; justify-content: center; }
+    #deploy {
+      padding: 11px 44px; border: 0; border-radius: 7px; font-size: 16px; font-weight: 700;
+      background: #ffc36a; color: #231a0c;
+    }
+    #deploy:hover { background: #ffd48f; }
   </style>
 </head>
 <body>
   <div id="stats"></div>
   <div id="crosshair" hidden></div>
+  <div id="meters" hidden></div>
   <div id="overlay">
     <h1>Team FPS Prototype</h1>
     <p>Click to play</p>
-    <dl>
+    <dl id="controls">
       <dt>WASD</dt><dd>Move</dd>
       <dt>Mouse</dt><dd>Look</dd>
       <dt>Space</dt><dd>Jump</dd>
       <dt>Shift</dt><dd>Sprint</dd>
       <dt>V</dt><dd>Swap shoulder</dd>
       <dt>R</dt><dd>Back to spawn</dd>
+      <dt>C</dt><dd>Change character</dd>
       <dt>Esc</dt><dd>Release mouse</dd>
     </dl>
+    <button id="change" type="button" hidden>Change character</button>
+  </div>
+  <div id="select" hidden>
+    <header>
+      <h1>Choose your character</h1>
+      <p>Click a card or press 1–4, then Enter to play</p>
+    </header>
+    <div>
+      <div id="cards"></div>
+      <footer><button id="deploy" type="button">Play</button></footer>
+    </div>
   </div>
   <script type="module" src="/src/main.js"></script>
 </body>
