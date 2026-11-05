@@ -1,18 +1,19 @@
 # Team FPS prototype
 
 A third-person, browser-based level for trying out team-shooter ideas.
-Uses Three.js on WebGL2, with no build step and no downloaded assets.
+Uses Three.js on WebGL2, built with Vite. All textures are generated in code.
 
 ## Run
 
-    npm start
+    npm install
+    npm run dev
 
-Then open http://localhost:8000. Any static file server works; opening
-`index.html` directly from disk won't, because browsers block ES modules there.
+Then open the URL Vite prints (http://localhost:5173 by default). Edits reload
+automatically.
 
-    npm test
-
-Plays the level's routes headlessly with a scripted walker.
+    npm run build     # production build in dist/
+    npm run preview   # serve that build locally
+    npm test          # plays the level's routes headlessly with a scripted walker
 
 ## Where things are
 
