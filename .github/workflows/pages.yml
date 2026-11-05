@@ -15,7 +15,31 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  # Deploy at most every 30 minutes. A newer push cancels a waiting run through
+  # the concurrency group above, so the latest commit is the one that deploys.
+  # Manual runs skip the wait.
+  throttle:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+    steps:
+      - name: Wait until 30 minutes after the last deploy
+        if: github.event_name == 'push'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          last=$(gh api "repos/$GITHUB_REPOSITORY/actions/workflows/pages.yml/runs?status=success&branch=main&per_page=1" \
+            --jq '.workflow_runs[0].updated_at // empty')
+          if [ -n "$last" ]; then
+            remaining=$(( 1800 - ($(date +%s) - $(date -d "$last" +%s)) ))
+            if [ "$remaining" -gt 0 ]; then
+              echo "Last deploy finished at $last, waiting ${remaining}s"
+              sleep "$remaining"
+            fi
+          fi
+
   build:
+    needs: throttle
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
