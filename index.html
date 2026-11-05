@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Team FPS Prototype</title>
+  <link rel="icon" href="data:,">
+  <style>
+    html, body { margin: 0; height: 100%; overflow: hidden; background: #8fb4d4; }
+    body { font: 14px/1.45 system-ui, sans-serif; color: #fff; }
+    canvas { display: block; position: fixed; inset: 0; }
+
+    #stats {
+      position: fixed; top: 10px; left: 12px; white-space: pre;
+      font: 12px/1.5 ui-monospace, monospace; text-shadow: 0 1px 2px #000b;
+      pointer-events: none;
+    }
+    #crosshair {
+      position: fixed; top: 50%; left: 50%; width: 4px; height: 4px; margin: -2px 0 0 -2px;
+      border-radius: 50%; background: #fff; box-shadow: 0 0 0 1px #0009; pointer-events: none;
+    }
+    #overlay {
+      position: fixed; inset: 0; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; text-align: center;
+      background: #10182499; cursor: pointer; user-select: none;
+    }
+    #overlay[hidden], #crosshair[hidden] { display: none; }
+    h1 { margin: 0 0 4px; font-size: 30px; }
+    #overlay > p { margin: 0 0 20px; font-size: 16px; }
+    dl {
+      display: grid; grid-template-columns: auto auto; gap: 5px 14px; margin: 0;
+      text-align: left;
+    }
+    dt { font-weight: 600; text-align: right; }
+    dd { margin: 0; opacity: .85; }
+  </style>
+  <script type="importmap">
+    { "imports": { "three": "./vendor/three.module.js" } }
+  </script>
+</head>
+<body>
+  <div id="stats"></div>
+  <div id="crosshair" hidden></div>
+  <div id="overlay">
+    <h1>Team FPS Prototype</h1>
+    <p>Click to play</p>
+    <dl>
+      <dt>WASD</dt><dd>Move</dd>
+      <dt>Mouse</dt><dd>Look</dd>
+      <dt>Space</dt><dd>Jump</dd>
+      <dt>Shift</dt><dd>Sprint</dd>
+      <dt>V</dt><dd>Swap shoulder</dd>
+      <dt>R</dt><dd>Back to spawn</dd>
+      <dt>Esc</dt><dd>Release mouse</dd>
+    </dl>
+  </div>
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>
